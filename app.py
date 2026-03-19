@@ -47,6 +47,21 @@ if not st.session_state["authenticated"]:
     st.stop()
 
 # ----------------- MAIN APP -----------------
+config_dict = get_config()
+
+def make_slider(key_id, is_number=False):
+    cfg = config_dict.get(key_id)
+    if not cfg:
+        st.warning(f"Clave {key_id} no encontrada.")
+        return 0
+    
+    min_v, max_v, val, step = cfg['min'], cfg['max'], cfg['val'], cfg['step']
+    if isinstance(step, int) or (isinstance(step, float) and step.is_integer()):
+        min_v, max_v, val, step = int(min_v), int(max_v), int(val), int(step)
+    
+    if is_number:
+        return st.number_input(cfg['name'], min_value=min_v, max_value=max_v, value=val, step=step, key=key_id)
+    return st.slider(cfg['name'], min_value=min_v, max_value=max_v, value=val, step=step, key=key_id)
 
 # Sidebar Configuration
 with st.sidebar:
@@ -83,7 +98,7 @@ with st.sidebar:
             except: steps = 1
             chosen_step = random.randint(0, steps)
             val = min_v + chosen_step * step_v
-            if isinstance(step_v, int):
+            if isinstance(step_v, int) or (isinstance(step_v, float) and step_v.is_integer()):
                 val = int(round(val))
             else:
                 val = round(val, 4)
@@ -153,24 +168,6 @@ with st.sidebar:
     if st.button("Cerrar Sesión"):
         st.session_state["authenticated"] = False
         st.rerun()
-
-
-config_dict = get_config()
-
-def make_slider(key_id, is_number=False):
-    cfg = config_dict.get(key_id)
-    if not cfg:
-        st.warning(f"Clave {key_id} no encontrada.")
-        return 0
-    
-    min_v, max_v, val, step = cfg['min'], cfg['max'], cfg['val'], cfg['step']
-    if step.is_integer():
-        min_v, max_v, val, step = int(min_v), int(max_v), int(val), int(step)
-    
-    if is_number:
-        return st.number_input(cfg['name'], min_value=min_v, max_value=max_v, value=val, step=step, key=key_id)
-    else:
-        return st.slider(cfg['name'], min_value=min_v, max_value=max_v, value=val, step=step, key=key_id)
 
 
 

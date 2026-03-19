@@ -86,7 +86,14 @@ def apply_custom_styles():
 def render_kpis(kpis):
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("VPN (Total)", f"$ {kpis['VPN_MMUSD']:,.2f} MM")
+        vpn = kpis['VPN_MMUSD']
+        color = "#D9534F" if vpn <= 0 else PRIMARY_COLOR
+        st.markdown(f"""
+        <div style="background-color: {CARD_BG}; padding: 0.5rem 0.8rem; border-radius: 1rem; box-shadow: 0 8px 24px -4px rgba(11, 28, 48, 0.04);">
+            <div style="font-size: 0.85rem; font-family: 'Manrope', sans-serif; color: {TEXT_COLOR};">VPN (Total)</div>
+            <div style="font-size: 1.4rem; font-weight: bold; font-family: 'Manrope', sans-serif; color: {color} !important;">$ {vpn:,.2f} MM</div>
+        </div>
+        """, unsafe_allow_html=True)
     with col2:
         tir_str = f"{kpis['TIR']*100:.1f} %" if kpis['TIR'] else "N/A"
         st.metric("TIR", tir_str)

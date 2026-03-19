@@ -40,7 +40,8 @@ def get_config():
 
     if conn is not None:
         try:
-            df = conn.read(worksheet="Variables")
+            url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+            df = conn.read(spreadsheet=url, worksheet="Variables")
             if not df.empty:
                 # Si hay datos de GS, sobreescribir config
                 config_dict_gs = {}
@@ -65,7 +66,8 @@ def get_users():
     conn = init_connection()
     if conn is not None:
         try:
-            df = conn.read(worksheet="Usuarios")
+            url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+            df = conn.read(spreadsheet=url, worksheet="Usuarios")
             return df
         except Exception as e:
             st.error(f"Error cargando accesos 'Usuarios' en la nube: {e}")

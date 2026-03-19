@@ -79,9 +79,10 @@ def check_login(username, password):
     if users.empty: return False, "No hay usuarios."
     
     if 'active' in users.columns:
-        active_users = users[users['active'] == True]
-        if active_users.empty:
-            active_users = users[users['active'].astype(str).str.upper() == 'TRUE']
+        mask = users['active'] == True
+        mask = mask | (users['active'].astype(str).str.upper() == 'TRUE')
+        mask = mask | (users['active'].astype(str).str.upper().str.strip() == 'VERDADERO')
+        active_users = users[mask]
     else:
         active_users = users
 
